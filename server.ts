@@ -1,12 +1,28 @@
-import * as io from 'socket.io-client';
+import * as io from 'socket.io-client'
+import Server from '../../common/server/abstract/server'
+import getterMessageTransferObject from '../../common/mto/get.mto'
 
-const socket = io.connect(`${Config.base.url}:${Config.base.port}`, {
-  reconnect: true,
-  query: "type=cms",
-});
+class CmsService extends Server {
 
-socket.on('connect', () => { 
-  console.log('Cms service connected')
+  constructor () {
+    super();
 
-  socket.emit('action', new getterMessageTransferObject('services', ['cms', 1]));
-});
+    this.io = io.connect(`${this.config.base.url}:${this.config.base.port}`, <any>{
+      reconnect: true,
+      query: "type=cms",
+    });
+
+    this.initSocket()
+  }
+
+  private initSocket (): void {
+    this.io.on('connect', () : void => { 
+      console.log('Cms service connected')
+    
+      this.io.emit('action', new getterMessageTransferObject('services', ['cms', 1]));
+    });
+  }
+
+}
+
+export default new CmsService()
