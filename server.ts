@@ -1,13 +1,12 @@
 import * as io from 'socket.io-client'
-import Server from '../../common/server/abstract/server'
-import getterMessageTransferObject from '../../common/mto/get.mto'
+import SocketServer from '../../common/server/abstract/socketServer'
 
-class CmsService extends Server {
+class CmsService extends SocketServer {
 
   constructor () {
     super();
 
-    this.io = io.connect(`${this.config.base.url}:${this.config.base.port}`, <any>{
+    this.io = io.connect(`${this.config.socket.url}:${this.config.socket.port}`, <any>{
       reconnect: true,
       query: "type=cms",
     });
@@ -18,8 +17,6 @@ class CmsService extends Server {
   private initSocket (): void {
     this.io.on('connect', () : void => { 
       console.log('Cms service connected')
-    
-      this.io.emit('action', new getterMessageTransferObject('services', ['cms', 1]));
     });
   }
 
